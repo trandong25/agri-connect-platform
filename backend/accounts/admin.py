@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
-from .models import User
+from .models import User, Farmer, KOC
 
 
 @admin.register(User)
@@ -52,3 +52,6 @@ class CustomUserAdmin(UserAdmin):
             },
         ),
     )
+
+admin.site.register(Farmer)
+admin.site.register(KOC)
