@@ -75,7 +75,7 @@ class ProductImage(BaseModel):
         return self.product.name
 
 
-class ImageQuality(BaseModel):
+class ImageQualityResult(BaseModel):
     image = models.OneToOneField(ProductImage, on_delete=models.CASCADE, related_name="quality_result")
     raw_blur_score = models.FloatField(null=True, blank=True, )
     normalized_blur_score = models.FloatField("Điểm độ mờ chuẩn hóa", null=True, blank=True, )

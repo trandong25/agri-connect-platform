@@ -7,8 +7,15 @@ from orders.models import Order
 
 
 class Payment(BaseModel):
-    PAYMENT_METHOD = [("COD", "Thanh toán khi nhận hàng"), ("ONLINE", "Thanh toán trực tuyến")]
-    PAYMENT_STATUS = [("PENDING", "Chờ thanh toán"), ("PAID", "Đã thanh toán"), ("FAILED", "Thanh toán thất bại")]
+    PAYMENT_METHOD = [
+        ("COD", "Thanh toán khi nhận hàng"),
+        ("ONLINE", "Thanh toán trực tuyến")
+    ]
+    PAYMENT_STATUS = [
+        ("PENDING", "Chờ thanh toán"),
+        ("PAID", "Đã thanh toán"),
+        ("FAILED", "Thanh toán thất bại")
+    ]
 
     order = models.ForeignKey(Order, on_delete=models.PROTECT, related_name="payments", verbose_name="Đơn hàng")
     method = models.CharField("Phương thức thanh toán", max_length=20, choices=PAYMENT_METHOD)

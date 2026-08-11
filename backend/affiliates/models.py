@@ -21,6 +21,41 @@ class AffiliateLink(BaseModel):
     def __str__(self):
         return f"{self.koc} - {self.product.name}"
 
+class PromotionPost(BaseModel):
+    POST_STATUS = [
+        ("DRAFT", "Bản nháp"),
+        ("PUBLISHED", "Đã đăng"),
+        ("HIDDEN", "Đã ẩn"),
+    ]
+
+    affiliate_link = models.ForeignKey(
+        AffiliateLink,
+        on_delete=models.PROTECT,
+        related_name="promotion_posts",
+        verbose_name="Liên kết quảng bá",
+    )
+    platform = models.CharField("Nền tảng", max_length=100)
+    title = models.CharField("Tiêu đề", max_length=250, blank=True)
+    content = models.TextField("Nội dung", blank=True)
+    post_url = models.URLField("Đường dẫn bài đăng", max_length=500, blank=True)
+    status = models.CharField(
+        "Trạng thái",
+        max_length=20,
+        choices=POST_STATUS,
+        default="DRAFT",
+    )
+    published_at = models.DateTimeField(
+        "Thời gian đăng",
+        null=True,
+        blank=True,
+    )
+
+    class Meta:
+        ordering = ["-created_date"]
+
+    def __str__(self):
+        return self.title or f"Bài quảng bá {self.id}"
+
 class Commission(BaseModel):
     COMMISSION_STATUS = [("PENDING", "Chờ ghi nhận"), ("APPROVED", "Đã ghi nhận"), ("PAID", "Đã thanh toán")]
 

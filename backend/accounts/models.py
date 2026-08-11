@@ -22,13 +22,14 @@ class User(AbstractUser):
         CONSUMER = "CONSUMER", "Người tiêu dùng"
         KOC = "KOC", "KOC/KOL"
 
+    email = models.EmailField("Email", unique=True)
     role = models.CharField("Vai trò",max_length=20,
-                            choices=Role.choices,default=Role.CONSUMER,)
+                            choices=Role.choices,default=Role.CONSUMER)
     is_phone_verified = models.BooleanField("Đã xác thực số điện thoại",default=False)
     phone_number = models.CharField("Số điện thoại", max_length=12,
                                     unique=True,null=True,blank=True,validators=[phone_validator])
     avatar = CloudinaryField("Ảnh đại diện",folder="agri_connect/avatars",blank=True,null=True)
-    REQUIRED_FIELDS = []
+    REQUIRED_FIELDS = ["email"]
 
     def __str__(self):
         return self.get_full_name() or self.username

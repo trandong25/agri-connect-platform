@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     "orders.apps.OrdersConfig",
     "payments.apps.PaymentsConfig",
     "affiliates.apps.AffiliatesConfig",
-    "reviews.apps.ReviewsConfig"
+    "reviews.apps.ReviewsConfig",
+    "notifications.apps.NotificationsConfig"
 ]
 
 AUTH_USER_MODEL = "accounts.User"
