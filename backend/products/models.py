@@ -1,7 +1,8 @@
 from cloudinary.models import CloudinaryField
 from django.core.validators import MinValueValidator
-from accounts.models import BaseModel, Farmer
 from django.db import models
+
+from accounts.models import BaseModel, Farmer
 
 
 class Category(BaseModel):

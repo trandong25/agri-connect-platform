@@ -1,6 +1,8 @@
 from pathlib import Path
 
+import cloudinary.api
 import environ
+import pymysql
 from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -88,15 +90,12 @@ DATABASES = {
     }
 }
 
-import cloudinary.api
-
 cloudinary.config(
-    cloud_name="dhao6ky98",
-    api_key="741292862314714",
-    api_secret="W2ZRuCS-79Rf5FY9H3cu5qUUDYQ"
+    cloud_name=env("CLOUDINARY_CLOUD_NAME"),
+    api_key=env("CLOUDINARY_API_KEY"),
+    api_secret=env("CLOUDINARY_API_SECRET"),
+    secure=True,
 )
-
-import pymysql
 
 pymysql.install_as_MySQLdb()
 # Password validation

@@ -2,7 +2,7 @@ from django.contrib import admin, messages
 from django.contrib.auth.admin import UserAdmin as DefaultUserAdmin
 from django.utils import timezone
 
-from .models import Address, ApprovalStatus, Farmer, KOC, User
+from .models import KOC, Address, ApprovalStatus, Farmer, User
 
 
 class CustomUserAdmin(DefaultUserAdmin):
