@@ -1,7 +1,7 @@
 from pathlib import Path
 
 import environ
-from django.conf.global_settings import AUTH_USER_MODEL
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -24,7 +24,6 @@ ALLOWED_HOSTS = env.list(
     default=["127.0.0.1", "localhost"],
 )
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -36,6 +35,12 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "accounts.apps.AccountsConfig",
+    "products.apps.ProductsConfig",
+    "orders.apps.OrdersConfig",
+    "payments.apps.PaymentsConfig",
+    "affiliates.apps.AffiliatesConfig",
+    "reviews.apps.ReviewsConfig",
+    "notifications.apps.NotificationsConfig"
 ]
 
 AUTH_USER_MODEL = "accounts.User"
@@ -69,22 +74,31 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "config.wsgi.application"
 
-
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": env("DB_NAME"),
-        "USER": env("DB_USER"),
-        "PASSWORD": env("DB_PASSWORD"),
-        "HOST": env("DB_HOST"),
-        "PORT": env("DB_PORT"),
+        "ENGINE": "django.db.backends.mysql",
+        "NAME": config("DB_NAME"),
+        "USER": config("DB_USER"),
+        "PASSWORD": config("DB_PASSWORD"),
+        "HOST": config("DB_HOST"),
+        "PORT": config("DB_PORT"),
     }
 }
 
+import cloudinary.api
 
+cloudinary.config(
+    cloud_name="dhao6ky98",
+    api_key="741292862314714",
+    api_secret="W2ZRuCS-79Rf5FY9H3cu5qUUDYQ"
+)
+
+import pymysql
+
+pymysql.install_as_MySQLdb()
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
 
@@ -103,7 +117,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
@@ -113,7 +126,6 @@ TIME_ZONE = "Asia/Ho_Chi_Minh"
 USE_I18N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
