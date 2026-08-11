@@ -3,7 +3,7 @@ import uuid
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
-from accounts.models import BaseModel, KOC
+from accounts.models import KOC, BaseModel
 from orders.models import OrderItem
 from products.models import Product
 
