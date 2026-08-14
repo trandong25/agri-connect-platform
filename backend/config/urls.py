@@ -2,9 +2,9 @@ from django.contrib import admin
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
+from accounts.urls import account_path_urlpatterns
+from accounts.urls import router as accounts_router
 from products.urls import router as products_router
-from accounts.urls import account_path_urlpatterns, router as accounts_router
-
 
 router = DefaultRouter()
 
