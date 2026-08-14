@@ -46,7 +46,7 @@ class AccountApiTests(APITestCase):
 
     def test_login_by_username(self):
         response = self.client.post(
-            reverse("token"),
+            reverse("login"),
             {
                 "login": self.user.username,
                 "password": self.password,
@@ -64,7 +64,7 @@ class AccountApiTests(APITestCase):
 
     def test_login_by_email(self):
         response = self.client.post(
-            reverse("token"),
+            reverse("login"),
             {
                 "login": self.user.email.upper(),
                 "password": self.password,
