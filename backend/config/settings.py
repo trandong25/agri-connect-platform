@@ -10,9 +10,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 env = environ.Env(
     DJANGO_DEBUG=(bool, True),
 )
-DEBUG = True
 
 environ.Env.read_env(BASE_DIR / ".env")
+
+DEBUG = env.bool("DJANGO_DEBUG")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
@@ -102,8 +103,9 @@ cloudinary.config(
     cloud_name=env("CLOUDINARY_CLOUD_NAME"),
     api_key=env("CLOUDINARY_API_KEY"),
     api_secret=env("CLOUDINARY_API_SECRET"),
-    secure=True,
+    secure=True
 )
+
 
 pymysql.install_as_MySQLdb()
 # Password validation
