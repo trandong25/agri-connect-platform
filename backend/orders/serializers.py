@@ -4,6 +4,7 @@ from rest_framework import serializers
 
 from affiliates.models import AffiliateLink
 from products.serializers import PublicProductSerializer
+
 from .models import Cart, CartItem
 
 

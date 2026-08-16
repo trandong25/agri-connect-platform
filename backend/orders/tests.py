@@ -4,7 +4,7 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from accounts.models import Farmer, KOC, User
+from accounts.models import KOC, Farmer, User
 from affiliates.models import AffiliateLink
 from orders.models import CartItem
 from products.models import Category, Product, Unit
