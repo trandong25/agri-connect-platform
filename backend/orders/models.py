@@ -85,6 +85,8 @@ class SellerOrder(BaseModel):
 class OrderItem(BaseModel):
     seller_order = models.ForeignKey(SellerOrder, on_delete=models.CASCADE, related_name="items", verbose_name="Đơn hàng của nông dân")
     product = models.ForeignKey(Product, on_delete=models.PROTECT, related_name="order_items", verbose_name="Sản phẩm")
+    affiliate_link = models.ForeignKey("affiliates.AffiliateLink", on_delete=models.SET_NULL, null=True, blank=True,
+        related_name="order_items", verbose_name="Liên kết giới thiệu")
     product_name = models.CharField("Tên sản phẩm", max_length=200)
     unit_name = models.CharField("Đơn vị tính", max_length=50)
     unit_price = models.DecimalField("Đơn giá", max_digits=12, decimal_places=2, validators=[MinValueValidator(0)])
