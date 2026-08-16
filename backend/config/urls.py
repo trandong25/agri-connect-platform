@@ -16,4 +16,5 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("", include(router.urls)),
     *account_path_urlpatterns,
+    path("", include("orders.urls")),
 ]
