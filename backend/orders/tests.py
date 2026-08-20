@@ -4,9 +4,16 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from accounts.models import Address, Farmer, KOC, User
+from accounts.models import KOC, Address, Farmer, User
 from affiliates.models import AffiliateLink
-from orders.models import Cart, CartItem, Order, OrderItem, SellerOrder, SellerOrderStatusLog
+from orders.models import (
+    Cart,
+    CartItem,
+    Order,
+    OrderItem,
+    SellerOrder,
+    SellerOrderStatusLog,
+)
 from payments.models import Payment
 from products.models import Category, Product, Unit
 
