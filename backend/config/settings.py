@@ -45,7 +45,8 @@ INSTALLED_APPS = [
     "payments.apps.PaymentsConfig",
     "affiliates.apps.AffiliatesConfig",
     "reviews.apps.ReviewsConfig",
-    "notifications.apps.NotificationsConfig"
+    "notifications.apps.NotificationsConfig",
+    "drf_spectacular",
 ]
 
 AUTH_USER_MODEL = "accounts.User"
@@ -54,6 +55,14 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
+"DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema"
+}
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "AgriConnect API",
+    "DESCRIPTION": "REST API cho nền tảng thương mại điện tử nông sản",
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False
 }
 
 MIDDLEWARE = [

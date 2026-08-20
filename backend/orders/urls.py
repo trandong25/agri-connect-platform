@@ -5,6 +5,8 @@ from orders import views
 
 router = DefaultRouter()
 router.register("cart", views.CartViewSet, basename="cart")
+router.register("orders", views.OrderViewSet, basename="order")
+router.register("seller-orders", views.SellerOrderViewSet, basename="seller-order")
 
 urlpatterns = [
     path("", include(router.urls)),
