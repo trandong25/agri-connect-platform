@@ -1,0 +1,2251 @@
+openapi: 3.0.3
+info:
+  title: AgriConnect API
+  version: 1.0.0
+  description: REST API cho nền tảng thương mại điện tử nông sản
+paths:
+  /addresses/:
+    get:
+      operationId: addresses_list
+      tags:
+      - addresses
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Address'
+          description: ''
+    post:
+      operationId: addresses_create
+      tags:
+      - addresses
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Address'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Address'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Address'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Address'
+          description: ''
+  /addresses/{id}/:
+    patch:
+      operationId: addresses_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this address.
+        required: true
+      tags:
+      - addresses
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedAddress'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedAddress'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedAddress'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Address'
+          description: ''
+    delete:
+      operationId: addresses_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this address.
+        required: true
+      tags:
+      - addresses
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /addresses/{id}/set-default/:
+    patch:
+      operationId: addresses_set_default_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this address.
+        required: true
+      tags:
+      - addresses
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedAddress'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedAddress'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedAddress'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Address'
+          description: ''
+  /cart/:
+    get:
+      operationId: cart_list
+      tags:
+      - cart
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Cart'
+          description: ''
+  /cart/items/:
+    post:
+      operationId: cart_items_create
+      tags:
+      - cart
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Cart'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Cart'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Cart'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+          description: ''
+  /cart/items/{item_id}/:
+    patch:
+      operationId: cart_items_partial_update
+      parameters:
+      - in: path
+        name: item_id
+        schema:
+          type: string
+        required: true
+      tags:
+      - cart
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedCart'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedCart'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedCart'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+          description: ''
+    delete:
+      operationId: cart_items_destroy
+      parameters:
+      - in: path
+        name: item_id
+        schema:
+          type: string
+        required: true
+      tags:
+      - cart
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /categories/:
+    get:
+      operationId: categories_list
+      tags:
+      - categories
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Category'
+          description: ''
+  /farmer-products/:
+    get:
+      operationId: farmer_products_list
+      tags:
+      - farmer-products
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+          description: ''
+    post:
+      operationId: farmer_products_create
+      tags:
+      - farmer-products
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Product'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Product'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Product'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+          description: ''
+  /farmer-products/{id}/:
+    get:
+      operationId: farmer_products_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this product.
+        required: true
+      tags:
+      - farmer-products
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+          description: ''
+    patch:
+      operationId: farmer_products_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this product.
+        required: true
+      tags:
+      - farmer-products
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedProduct'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedProduct'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedProduct'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+          description: ''
+    delete:
+      operationId: farmer_products_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this product.
+        required: true
+      tags:
+      - farmer-products
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /farmer-products/{id}/images/:
+    get:
+      operationId: farmer_products_images_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this product.
+        required: true
+      tags:
+      - farmer-products
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+          description: ''
+    post:
+      operationId: farmer_products_images_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this product.
+        required: true
+      tags:
+      - farmer-products
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Product'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Product'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+          description: ''
+  /farmer-products/{id}/images/{image_id}/:
+    delete:
+      operationId: farmer_products_images_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this product.
+        required: true
+      - in: path
+        name: image_id
+        schema:
+          type: string
+          pattern: ^\d+$
+        required: true
+      tags:
+      - farmer-products
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /farmers/:
+    post:
+      operationId: farmers_create
+      tags:
+      - farmers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Farmer'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Farmer'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Farmer'
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Farmer'
+          description: ''
+  /farmers/current-profile/:
+    get:
+      operationId: farmers_current_profile_retrieve
+      tags:
+      - farmers
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Farmer'
+          description: ''
+    patch:
+      operationId: farmers_current_profile_partial_update
+      tags:
+      - farmers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedFarmer'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedFarmer'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedFarmer'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Farmer'
+          description: ''
+  /kocs/:
+    post:
+      operationId: kocs_create
+      tags:
+      - kocs
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/KOC'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/KOC'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/KOC'
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KOC'
+          description: ''
+  /kocs/current-profile/:
+    get:
+      operationId: kocs_current_profile_retrieve
+      tags:
+      - kocs
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KOC'
+          description: ''
+    patch:
+      operationId: kocs_current_profile_partial_update
+      tags:
+      - kocs
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedKOC'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedKOC'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedKOC'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KOC'
+          description: ''
+  /login/:
+    post:
+      operationId: login_create
+      description: |-
+        Takes a set of user credentials and returns an access and refresh JSON web
+        token pair to prove the authentication of those credentials.
+      tags:
+      - login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Login'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Login'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Login'
+        required: true
+      security:
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Login'
+          description: ''
+  /orders/:
+    get:
+      operationId: orders_list
+      tags:
+      - orders
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Order'
+          description: ''
+    post:
+      operationId: orders_create
+      tags:
+      - orders
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Order'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Order'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Order'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+          description: ''
+  /orders/{id}/:
+    get:
+      operationId: orders_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this order.
+        required: true
+      tags:
+      - orders
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+          description: ''
+  /products/:
+    get:
+      operationId: products_list
+      tags:
+      - products
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PublicProduct'
+          description: ''
+  /products/{id}/:
+    get:
+      operationId: products_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this product.
+        required: true
+      tags:
+      - products
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicProduct'
+          description: ''
+  /seller-orders/:
+    get:
+      operationId: seller_orders_list
+      tags:
+      - seller-orders
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FarmerSellerOrder'
+          description: ''
+  /seller-orders/{id}/:
+    get:
+      operationId: seller_orders_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this seller order.
+        required: true
+      tags:
+      - seller-orders
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FarmerSellerOrder'
+          description: ''
+  /seller-orders/{id}/status/:
+    patch:
+      operationId: seller_orders_status_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this seller order.
+        required: true
+      tags:
+      - seller-orders
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedSellerOrderStatusUpdate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedSellerOrderStatusUpdate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedSellerOrderStatusUpdate'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SellerOrderStatusUpdate'
+          description: ''
+  /token/refresh/:
+    post:
+      operationId: token_refresh_create
+      description: |-
+        Takes a refresh type JSON web token and returns an access type JSON web
+        token if the refresh token is valid.
+      tags:
+      - token
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenRefresh'
+          description: ''
+  /units/:
+    get:
+      operationId: units_list
+      tags:
+      - units
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Unit'
+          description: ''
+  /users/:
+    post:
+      operationId: users_create
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/User'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/User'
+        required: true
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+  /users/current-user/:
+    get:
+      operationId: users_current_user_retrieve
+      tags:
+      - users
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+    patch:
+      operationId: users_current_user_partial_update
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUser'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedUser'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedUser'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+components:
+  schemas:
+    Address:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        recipient_name:
+          type: string
+          title: Tên người nhận
+          maxLength: 250
+        phone_number:
+          type: string
+          title: Số điện thoại
+          pattern: ^(0|\+84)\d{9}$
+          maxLength: 13
+        province:
+          type: string
+          title: Thành Phố/Tỉnh
+          maxLength: 150
+        ward:
+          type: string
+          title: Xã
+          maxLength: 150
+        address_detail:
+          type: string
+          title: Địa chỉ chi tiết
+          maxLength: 250
+        is_default:
+          type: boolean
+          readOnly: true
+          title: Địa chỉ mặc định
+        created_date:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_date:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - address_detail
+      - created_date
+      - id
+      - is_default
+      - phone_number
+      - province
+      - recipient_name
+      - updated_date
+      - ward
+    ApprovalStatusEnum:
+      enum:
+      - PENDING
+      - APPROVED
+      - REJECTED
+      type: string
+      description: |-
+        * `PENDING` - Chờ duyệt
+        * `APPROVED` - Đã duyệt
+        * `REJECTED` - Từ chối
+    Cart:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/CartItem'
+          readOnly: true
+        created_date:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_date:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_date
+      - id
+      - items
+      - updated_date
+    CartItem:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        product:
+          type: integer
+          title: Sản phẩm
+        quantity:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+          title: Số lượng
+        affiliate_code:
+          type: string
+          format: uuid
+          writeOnly: true
+          nullable: true
+        created_date:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_date:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_date
+      - id
+      - product
+      - quantity
+      - updated_date
+    Category:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          readOnly: true
+          title: Tên danh mục
+        description:
+          type: string
+          readOnly: true
+      required:
+      - description
+      - id
+      - name
+    Farmer:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        farm_name:
+          type: string
+          title: Tên nông trại
+          maxLength: 250
+        address:
+          type: string
+          title: Địa chỉ
+          maxLength: 255
+        description:
+          type: string
+        verification_document:
+          type: string
+          nullable: true
+          title: Giấy tờ xác minh
+        approval_status:
+          allOf:
+          - $ref: '#/components/schemas/ApprovalStatusEnum'
+          readOnly: true
+        approved_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        created_date:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_date:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - approval_status
+      - approved_at
+      - created_date
+      - id
+      - updated_date
+    FarmerSellerOrder:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        order:
+          type: integer
+          readOnly: true
+          title: Đơn hàng tổng
+        order_code:
+          type: string
+          format: uuid
+          readOnly: true
+        recipient_name:
+          type: string
+          readOnly: true
+        phone_number:
+          type: string
+          readOnly: true
+        province:
+          type: string
+          readOnly: true
+        ward:
+          type: string
+          readOnly: true
+        address_detail:
+          type: string
+          readOnly: true
+        consumer_note:
+          type: string
+          readOnly: true
+        subtotal:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,12}(?:\.\d{0,2})?$
+          readOnly: true
+          title: Tiền hàng
+        shipping_fee:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+          readOnly: true
+          title: Phí vận chuyển
+        discount_amount:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+          readOnly: true
+          title: Số tiền giảm
+        total_amount:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,12}(?:\.\d{0,2})?$
+          readOnly: true
+          title: Tổng tiền
+        status:
+          allOf:
+          - $ref: '#/components/schemas/NewStatusEnum'
+          readOnly: true
+          title: Trạng thái
+        note:
+          type: string
+          readOnly: true
+          title: Ghi chú của nông dân
+        confirmed_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+          title: Thời gian xác nhận
+        shipped_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+          title: Thời gian giao hàng
+        completed_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+          title: Thời gian hoàn thành
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderItem'
+          readOnly: true
+        status_logs:
+          type: array
+          items:
+            $ref: '#/components/schemas/SellerOrderStatusLog'
+          readOnly: true
+        created_date:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_date:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - address_detail
+      - completed_at
+      - confirmed_at
+      - consumer_note
+      - created_date
+      - discount_amount
+      - id
+      - items
+      - note
+      - order
+      - order_code
+      - phone_number
+      - province
+      - recipient_name
+      - shipped_at
+      - shipping_fee
+      - status
+      - status_logs
+      - subtotal
+      - total_amount
+      - updated_date
+      - ward
+    ImageQualityResult:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        raw_blur_score:
+          type: number
+          format: double
+          readOnly: true
+          nullable: true
+        normalized_blur_score:
+          type: number
+          format: double
+          readOnly: true
+          nullable: true
+          title: Điểm độ mờ chuẩn hóa
+        brightness_mean:
+          type: number
+          format: double
+          readOnly: true
+          nullable: true
+          title: Độ sáng trung bình
+        contrast_std:
+          type: number
+          format: double
+          readOnly: true
+          nullable: true
+          title: Độ tương phản
+        dark_ratio:
+          type: number
+          format: double
+          readOnly: true
+          nullable: true
+          title: Tỷ lệ vùng tối
+        bright_ratio:
+          type: number
+          format: double
+          readOnly: true
+          nullable: true
+          title: Tỷ lệ vùng sáng
+        is_blurry:
+          type: boolean
+          readOnly: true
+          title: Ảnh bị mờ
+        is_too_dark:
+          type: boolean
+          readOnly: true
+          title: Ảnh quá tối
+        is_too_bright:
+          type: boolean
+          readOnly: true
+          title: Ảnh quá sáng
+        is_acceptable:
+          type: boolean
+          readOnly: true
+          title: Ảnh đạt yêu cầu
+        feedback:
+          type: string
+          readOnly: true
+          title: Hướng dẫn chụp lại
+        created_date:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_date:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - bright_ratio
+      - brightness_mean
+      - contrast_std
+      - created_date
+      - dark_ratio
+      - feedback
+      - id
+      - is_acceptable
+      - is_blurry
+      - is_too_bright
+      - is_too_dark
+      - normalized_blur_score
+      - raw_blur_score
+      - updated_date
+    KOC:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        koc_name:
+          type: string
+          title: Tên KOC
+          maxLength: 150
+        social_platform:
+          type: string
+          maxLength: 100
+        social_url:
+          oneOf:
+          - type: string
+            format: uri
+            maxLength: 500
+          - type: string
+            maxLength: 0
+        follower:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+        approval_status:
+          allOf:
+          - $ref: '#/components/schemas/ApprovalStatusEnum'
+          readOnly: true
+        approved_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        created_date:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_date:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - approval_status
+      - approved_at
+      - created_date
+      - id
+      - updated_date
+    Login:
+      type: object
+      properties:
+        login:
+          type: string
+        password:
+          type: string
+          writeOnly: true
+      required:
+      - login
+      - password
+    NewStatusEnum:
+      enum:
+      - PENDING
+      - CONFIRMED
+      - SHIPPING
+      - COMPLETED
+      type: string
+      description: |-
+        * `PENDING` - Chờ xác nhận
+        * `CONFIRMED` - Đã xác nhận
+        * `SHIPPING` - Đang giao hàng
+        * `COMPLETED` - Đã hoàn thành
+    Order:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        code:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Mã đơn hàng
+        address:
+          type: integer
+          writeOnly: true
+        cart_item_ids:
+          type: array
+          items:
+            type: integer
+            minimum: 1
+          writeOnly: true
+        payment_method:
+          allOf:
+          - $ref: '#/components/schemas/PaymentMethodEnum'
+          writeOnly: true
+        recipient_name:
+          type: string
+          readOnly: true
+          title: Tên người nhận
+        phone_number:
+          type: string
+          readOnly: true
+          title: Số điện thoại người nhận
+        province:
+          type: string
+          readOnly: true
+          title: Tỉnh hoặc thành phố
+        ward:
+          type: string
+          readOnly: true
+          title: Phường hoặc xã
+        address_detail:
+          type: string
+          readOnly: true
+          title: Địa chỉ chi tiết
+        subtotal:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,12}(?:\.\d{0,2})?$
+          readOnly: true
+          title: Tiền hàng
+        shipping_fee:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+          readOnly: true
+          title: Phí vận chuyển
+        discount_amount:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+          readOnly: true
+          title: Số tiền giảm
+        total_amount:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,12}(?:\.\d{0,2})?$
+          readOnly: true
+          title: Tổng tiền
+        note:
+          type: string
+          title: Ghi chú của người mua
+        seller_orders:
+          type: array
+          items:
+            $ref: '#/components/schemas/SellerOrder'
+          readOnly: true
+        created_date:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_date:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - address
+      - address_detail
+      - cart_item_ids
+      - code
+      - created_date
+      - discount_amount
+      - id
+      - payment_method
+      - phone_number
+      - province
+      - recipient_name
+      - seller_orders
+      - shipping_fee
+      - subtotal
+      - total_amount
+      - updated_date
+      - ward
+    OrderItem:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        product:
+          type: integer
+          readOnly: true
+          title: Sản phẩm
+        affiliate_code:
+          type: string
+          readOnly: true
+        product_name:
+          type: string
+          readOnly: true
+          title: Tên sản phẩm
+        unit_name:
+          type: string
+          readOnly: true
+          title: Đơn vị tính
+        unit_price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+          readOnly: true
+          title: Đơn giá
+        quantity:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+          readOnly: true
+          title: Số lượng
+        subtotal:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,12}(?:\.\d{0,2})?$
+          readOnly: true
+          title: Thành tiền
+        created_date:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - affiliate_code
+      - created_date
+      - id
+      - product
+      - product_name
+      - quantity
+      - subtotal
+      - unit_name
+      - unit_price
+    PatchedAddress:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        recipient_name:
+          type: string
+          title: Tên người nhận
+          maxLength: 250
+        phone_number:
+          type: string
+          title: Số điện thoại
+          pattern: ^(0|\+84)\d{9}$
+          maxLength: 13
+        province:
+          type: string
+          title: Thành Phố/Tỉnh
+          maxLength: 150
+        ward:
+          type: string
+          title: Xã
+          maxLength: 150
+        address_detail:
+          type: string
+          title: Địa chỉ chi tiết
+          maxLength: 250
+        is_default:
+          type: boolean
+          readOnly: true
+          title: Địa chỉ mặc định
+        created_date:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_date:
+          type: string
+          format: date-time
+          readOnly: true
+    PatchedCart:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/CartItem'
+          readOnly: true
+        created_date:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_date:
+          type: string
+          format: date-time
+          readOnly: true
+    PatchedFarmer:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        farm_name:
+          type: string
+          title: Tên nông trại
+          maxLength: 250
+        address:
+          type: string
+          title: Địa chỉ
+          maxLength: 255
+        description:
+          type: string
+        verification_document:
+          type: string
+          nullable: true
+          title: Giấy tờ xác minh
+        approval_status:
+          allOf:
+          - $ref: '#/components/schemas/ApprovalStatusEnum'
+          readOnly: true
+        approved_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        created_date:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_date:
+          type: string
+          format: date-time
+          readOnly: true
+    PatchedKOC:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        koc_name:
+          type: string
+          title: Tên KOC
+          maxLength: 150
+        social_platform:
+          type: string
+          maxLength: 100
+        social_url:
+          oneOf:
+          - type: string
+            format: uri
+            maxLength: 500
+          - type: string
+            maxLength: 0
+        follower:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+        approval_status:
+          allOf:
+          - $ref: '#/components/schemas/ApprovalStatusEnum'
+          readOnly: true
+        approved_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        created_date:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_date:
+          type: string
+          format: date-time
+          readOnly: true
+    PatchedProduct:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        farmer:
+          type: integer
+          readOnly: true
+        farmer_name:
+          type: string
+          readOnly: true
+        category:
+          type: integer
+        category_name:
+          type: string
+          readOnly: true
+        unit:
+          type: integer
+        unit_name:
+          type: string
+          readOnly: true
+        unit_symbol:
+          type: string
+          readOnly: true
+        name:
+          type: string
+          title: Tên sản phẩm
+          maxLength: 200
+        description:
+          type: string
+          maxLength: 150
+        origin:
+          type: string
+          maxLength: 255
+        price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+        stock_quantity:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+          title: Số lượng tồn kho
+        minimum_order_quantity:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+          title: Số lượng đặt tối thiểu
+        harvest_date:
+          type: string
+          format: date
+          nullable: true
+          title: Ngày thu hoạch
+        expiry_date:
+          type: string
+          format: date
+          nullable: true
+          title: Ngày hết hạn
+        status:
+          allOf:
+          - $ref: '#/components/schemas/Status513Enum'
+          title: Trạng thái
+        rejection_reason:
+          type: string
+          readOnly: true
+          title: Lý do không đạt
+        images:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductImage'
+          readOnly: true
+        created_date:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_date:
+          type: string
+          format: date-time
+          readOnly: true
+    PatchedSellerOrderStatusUpdate:
+      type: object
+      properties:
+        status:
+          $ref: '#/components/schemas/SellerOrderStatusUpdateStatusEnum'
+        note:
+          type: string
+    PatchedUser:
+      type: object
+      properties:
+        first_name:
+          type: string
+          title: Tên
+          maxLength: 150
+        last_name:
+          type: string
+          title: Họ
+          maxLength: 150
+        phone_number:
+          nullable: true
+          title: Số điện thoại
+          oneOf:
+          - type: string
+            pattern: ^(0|\+84)\d{9}$
+            maxLength: 12
+          - type: string
+            maxLength: 0
+        avatar:
+          type: string
+          nullable: true
+          title: Ảnh đại diện
+        id:
+          type: integer
+          readOnly: true
+        username:
+          type: string
+          title: Tên đăng nhập
+          description: Yêu cầu. 150 ký tự hoặc ít hơn. Chỉ là chữ cái, chữ số và @/./+/-/_.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          maxLength: 254
+        password:
+          type: string
+          writeOnly: true
+        role:
+          allOf:
+          - $ref: '#/components/schemas/RoleEnum'
+          title: Vai trò
+        is_phone_verified:
+          type: boolean
+          readOnly: true
+          title: Đã xác thực số điện thoại
+        date_joined:
+          type: string
+          format: date-time
+          readOnly: true
+          title: Ngày tham gia
+    PaymentMethodEnum:
+      enum:
+      - COD
+      - ONLINE
+      type: string
+      description: |-
+        * `COD` - Thanh toán khi nhận hàng
+        * `ONLINE` - Thanh toán trực tuyến
+    Product:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        farmer:
+          type: integer
+          readOnly: true
+        farmer_name:
+          type: string
+          readOnly: true
+        category:
+          type: integer
+        category_name:
+          type: string
+          readOnly: true
+        unit:
+          type: integer
+        unit_name:
+          type: string
+          readOnly: true
+        unit_symbol:
+          type: string
+          readOnly: true
+        name:
+          type: string
+          title: Tên sản phẩm
+          maxLength: 200
+        description:
+          type: string
+          maxLength: 150
+        origin:
+          type: string
+          maxLength: 255
+        price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+        stock_quantity:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+          title: Số lượng tồn kho
+        minimum_order_quantity:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+          title: Số lượng đặt tối thiểu
+        harvest_date:
+          type: string
+          format: date
+          nullable: true
+          title: Ngày thu hoạch
+        expiry_date:
+          type: string
+          format: date
+          nullable: true
+          title: Ngày hết hạn
+        status:
+          allOf:
+          - $ref: '#/components/schemas/Status513Enum'
+          title: Trạng thái
+        rejection_reason:
+          type: string
+          readOnly: true
+          title: Lý do không đạt
+        images:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductImage'
+          readOnly: true
+        created_date:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_date:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - category
+      - category_name
+      - created_date
+      - farmer
+      - farmer_name
+      - id
+      - images
+      - name
+      - price
+      - rejection_reason
+      - stock_quantity
+      - unit
+      - unit_name
+      - unit_symbol
+      - updated_date
+    ProductImage:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        image:
+          type: string
+          title: Ảnh sản phẩm
+        is_primary:
+          type: boolean
+          readOnly: true
+          title: Ảnh đại diện
+        display_order:
+          type: integer
+          maximum: 4294967295
+          minimum: 0
+          format: int64
+          title: Thứ tự hiển thị
+        quality_result:
+          allOf:
+          - $ref: '#/components/schemas/ImageQualityResult'
+          readOnly: true
+          nullable: true
+        created_date:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_date:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_date
+      - id
+      - image
+      - is_primary
+      - quality_result
+      - updated_date
+    PublicProduct:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        farmer:
+          type: integer
+          readOnly: true
+        farmer_name:
+          type: string
+          readOnly: true
+        category:
+          type: integer
+          readOnly: true
+        category_name:
+          type: string
+          readOnly: true
+        unit:
+          type: integer
+          readOnly: true
+        unit_name:
+          type: string
+          readOnly: true
+        unit_symbol:
+          type: string
+          readOnly: true
+        name:
+          type: string
+          readOnly: true
+          title: Tên sản phẩm
+        description:
+          type: string
+          readOnly: true
+        origin:
+          type: string
+          readOnly: true
+        price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+          readOnly: true
+        stock_quantity:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+          readOnly: true
+          title: Số lượng tồn kho
+        minimum_order_quantity:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+          readOnly: true
+          title: Số lượng đặt tối thiểu
+        harvest_date:
+          type: string
+          format: date
+          readOnly: true
+          nullable: true
+          title: Ngày thu hoạch
+        expiry_date:
+          type: string
+          format: date
+          readOnly: true
+          nullable: true
+          title: Ngày hết hạn
+        status:
+          allOf:
+          - $ref: '#/components/schemas/Status513Enum'
+          readOnly: true
+          title: Trạng thái
+        images:
+          type: string
+          readOnly: true
+        created_date:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_date:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - category
+      - category_name
+      - created_date
+      - description
+      - expiry_date
+      - farmer
+      - farmer_name
+      - harvest_date
+      - id
+      - images
+      - minimum_order_quantity
+      - name
+      - origin
+      - price
+      - status
+      - stock_quantity
+      - unit
+      - unit_name
+      - unit_symbol
+      - updated_date
+    RoleEnum:
+      enum:
+      - FARMER
+      - CONSUMER
+      - KOC
+      type: string
+      description: |-
+        * `FARMER` - Nông dân
+        * `CONSUMER` - Người tiêu dùng
+        * `KOC` - KOC/KOL
+    SellerOrder:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        farmer:
+          type: integer
+          readOnly: true
+          title: Nông dân
+        subtotal:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,12}(?:\.\d{0,2})?$
+          readOnly: true
+          title: Tiền hàng
+        shipping_fee:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+          readOnly: true
+          title: Phí vận chuyển
+        discount_amount:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+          readOnly: true
+          title: Số tiền giảm
+        total_amount:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,12}(?:\.\d{0,2})?$
+          readOnly: true
+          title: Tổng tiền
+        status:
+          allOf:
+          - $ref: '#/components/schemas/NewStatusEnum'
+          readOnly: true
+          title: Trạng thái
+        note:
+          type: string
+          readOnly: true
+          title: Ghi chú của nông dân
+        confirmed_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+          title: Thời gian xác nhận
+        shipped_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+          title: Thời gian giao hàng
+        completed_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+          title: Thời gian hoàn thành
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderItem'
+          readOnly: true
+        status_logs:
+          type: array
+          items:
+            $ref: '#/components/schemas/SellerOrderStatusLog'
+          readOnly: true
+        created_date:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_date:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - completed_at
+      - confirmed_at
+      - created_date
+      - discount_amount
+      - farmer
+      - id
+      - items
+      - note
+      - shipped_at
+      - shipping_fee
+      - status
+      - status_logs
+      - subtotal
+      - total_amount
+      - updated_date
+    SellerOrderStatusLog:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        old_status:
+          allOf:
+          - $ref: '#/components/schemas/NewStatusEnum'
+          readOnly: true
+          title: Trạng thái cũ
+        new_status:
+          allOf:
+          - $ref: '#/components/schemas/NewStatusEnum'
+          readOnly: true
+          title: Trạng thái mới
+        changed_by:
+          type: integer
+          readOnly: true
+          nullable: true
+          title: Người thay đổi
+        note:
+          type: string
+          readOnly: true
+          title: Ghi chú
+        created_date:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - changed_by
+      - created_date
+      - id
+      - new_status
+      - note
+      - old_status
+    SellerOrderStatusUpdate:
+      type: object
+      properties:
+        status:
+          $ref: '#/components/schemas/SellerOrderStatusUpdateStatusEnum'
+        note:
+          type: string
+      required:
+      - status
+    SellerOrderStatusUpdateStatusEnum:
+      enum:
+      - CONFIRMED
+      - SHIPPING
+      - COMPLETED
+      type: string
+      description: |-
+        * `CONFIRMED` - CONFIRMED
+        * `SHIPPING` - SHIPPING
+        * `COMPLETED` - COMPLETED
+    Status513Enum:
+      enum:
+      - DRAFT
+      - PENDING
+      - AVAILABLE
+      - HIDDEN
+      - REJECTED
+      type: string
+      description: |-
+        * `DRAFT` - Bản nháp
+        * `PENDING` - Chờ kiểm tra
+        * `AVAILABLE` - Đang bán
+        * `HIDDEN` - Đã ẩn
+        * `REJECTED` - Không đạt yêu cầu
+    TokenRefresh:
+      type: object
+      properties:
+        access:
+          type: string
+          readOnly: true
+        refresh:
+          type: string
+          writeOnly: true
+      required:
+      - access
+      - refresh
+    Unit:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          readOnly: true
+          title: Tên đơn vị
+        symbol:
+          type: string
+          readOnly: true
+      required:
+      - id
+      - name
+      - symbol
+    User:
+      type: object
+      properties:
+        first_name:
+          type: string
+          title: Tên
+          maxLength: 150
+        last_name:
+          type: string
+          title: Họ
+          maxLength: 150
+        phone_number:
+          nullable: true
+          title: Số điện thoại
+          oneOf:
+          - type: string
+            pattern: ^(0|\+84)\d{9}$
+            maxLength: 12
+          - type: string
+            maxLength: 0
+        avatar:
+          type: string
+          nullable: true
+          title: Ảnh đại diện
+        id:
+          type: integer
+          readOnly: true
+        username:
+          type: string
+          title: Tên đăng nhập
+          description: Yêu cầu. 150 ký tự hoặc ít hơn. Chỉ là chữ cái, chữ số và @/./+/-/_.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          maxLength: 254
+        password:
+          type: string
+          writeOnly: true
+        role:
+          allOf:
+          - $ref: '#/components/schemas/RoleEnum'
+          title: Vai trò
+        is_phone_verified:
+          type: boolean
+          readOnly: true
+          title: Đã xác thực số điện thoại
+        date_joined:
+          type: string
+          format: date-time
+          readOnly: true
+          title: Ngày tham gia
+      required:
+      - date_joined
+      - email
+      - id
+      - is_phone_verified
+      - password
+      - role
+      - username
+  securitySchemes:
+    jwtAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

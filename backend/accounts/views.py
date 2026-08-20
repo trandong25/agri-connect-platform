@@ -110,6 +110,8 @@ class LoginView(TokenObtainPairView):
     permission_classes = [permissions.AllowAny]
 
 class AddressViewSet(viewsets.ViewSet):
+    queryset = Address.objects.all()
+    serializer_class = serializers.AddressSerializer
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
