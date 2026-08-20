@@ -628,6 +628,64 @@ paths:
               schema:
                 $ref: '#/components/schemas/Order'
           description: ''
+  /payments/:
+    get:
+      operationId: payments_list
+      tags:
+      - payments
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Payment'
+          description: ''
+  /payments/{id}/:
+    get:
+      operationId: payments_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this payment.
+        required: true
+      tags:
+      - payments
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment'
+          description: ''
+  /payments/{id}/simulate/:
+    post:
+      operationId: payments_simulate_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this payment.
+        required: true
+      tags:
+      - payments
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment'
+          description: ''
   /products/:
     get:
       operationId: products_list
@@ -1290,6 +1348,14 @@ components:
       required:
       - login
       - password
+    MethodEnum:
+      enum:
+      - COD
+      - ONLINE
+      type: string
+      description: |-
+        * `COD` - Thanh toán khi nhận hàng
+        * `ONLINE` - Thanh toán trực tuyến
     NewStatusEnum:
       enum:
       - PENDING
@@ -1734,6 +1800,60 @@ components:
           format: date-time
           readOnly: true
           title: Ngày tham gia
+    Payment:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        order:
+          type: integer
+          readOnly: true
+          title: Đơn hàng
+        method:
+          allOf:
+          - $ref: '#/components/schemas/MethodEnum'
+          readOnly: true
+          title: Phương thức thanh toán
+        amount:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,12}(?:\.\d{0,2})?$
+          readOnly: true
+          title: Số tiền thanh toán
+        status:
+          allOf:
+          - $ref: '#/components/schemas/PaymentStatusEnum'
+          readOnly: true
+          title: Trạng thái thanh toán
+        transaction_code:
+          type: string
+          readOnly: true
+          title: Mã giao dịch
+        paid_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+          title: Thời gian thanh toán
+        created_date:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_date:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - amount
+      - created_date
+      - id
+      - method
+      - order
+      - paid_at
+      - status
+      - transaction_code
+      - updated_date
     PaymentMethodEnum:
       enum:
       - COD
@@ -1742,6 +1862,16 @@ components:
       description: |-
         * `COD` - Thanh toán khi nhận hàng
         * `ONLINE` - Thanh toán trực tuyến
+    PaymentStatusEnum:
+      enum:
+      - PENDING
+      - PAID
+      - FAILED
+      type: string
+      description: |-
+        * `PENDING` - Chờ thanh toán
+        * `PAID` - Đã thanh toán
+        * `FAILED` - Thanh toán thất bại
     Product:
       type: object
       properties:

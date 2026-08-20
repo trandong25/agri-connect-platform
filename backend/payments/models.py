@@ -1,6 +1,5 @@
 from django.core.validators import MinValueValidator
 from django.db import models
-from django.utils import timezone
 
 from accounts.models import BaseModel
 from orders.models import Order
@@ -26,11 +25,6 @@ class Payment(BaseModel):
 
     class Meta:
         ordering = ["-created_date"]
-
-    def mark_as_paid(self):
-        self.status = "PAID"
-        self.paid_at = timezone.now()
-        self.save(update_fields=["status", "paid_at", "updated_date"])
 
     def __str__(self):
         return f"{self.order} - {self.get_method_display()} - {self.get_status_display()}"
