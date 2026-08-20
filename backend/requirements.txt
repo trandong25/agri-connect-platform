@@ -6,6 +6,7 @@ colorama==0.4.6
 Django==5.2.16
 django-ckeditor==6.7.3
 django-environ==0.14.0
+django-filter==26.1
 django-js-asset==4.0.1
 djangorestframework==3.17.1
 djangorestframework_simplejwt==5.5.1

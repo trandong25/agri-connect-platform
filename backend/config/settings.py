@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     "reviews.apps.ReviewsConfig",
     "notifications.apps.NotificationsConfig",
     "drf_spectacular",
+    "django_filters",
 ]
 
 AUTH_USER_MODEL = "accounts.User"
