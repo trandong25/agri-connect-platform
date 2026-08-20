@@ -7,12 +7,11 @@ from rest_framework.response import Response
 
 from accounts.models import Farmer
 from accounts.permissions import IsConsumer, IsFarmer
+from reviews import serializers as review_serializers
+from reviews.models import Review
 
 from . import serializers
 from .models import Category, Product, ProductImage, Unit
-
-from reviews import serializers as review_serializers
-from reviews.models import Review
 
 
 class CategoryViewSet(viewsets.ViewSet, generics.ListAPIView):
