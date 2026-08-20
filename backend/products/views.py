@@ -6,10 +6,13 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from accounts.models import Farmer
-from accounts.permissions import IsFarmer
+from accounts.permissions import IsConsumer, IsFarmer
 
 from . import serializers
 from .models import Category, Product, ProductImage, Unit
+
+from reviews import serializers as review_serializers
+from reviews.models import Review
 
 
 class CategoryViewSet(viewsets.ViewSet, generics.ListAPIView):
@@ -26,10 +29,18 @@ class UnitViewSet(viewsets.ViewSet, generics.ListAPIView):
     pagination_class = None
 
 
-class ProductViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIView):
+class ProductViewSet(
+    viewsets.ViewSet,
+    generics.ListAPIView,
+    generics.RetrieveAPIView
+):
     serializer_class = serializers.PublicProductSerializer
     permission_classes = [permissions.AllowAny]
-    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filter_backends = [
+        DjangoFilterBackend,
+        filters.SearchFilter,
+        filters.OrderingFilter
+    ]
     filterset_fields = {
         "category": ["exact"],
         "price": ["gte", "lte"]
@@ -37,68 +48,165 @@ class ProductViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAP
     search_fields = ["name"]
     ordering_fields = ["price", "created_date"]
 
+    def get_permissions(self):
+        if self.action == "reviews" and self.request.method == "POST":
+            return [permissions.IsAuthenticated(), IsConsumer()]
+
+        return [permissions.AllowAny()]
+
     def get_queryset(self):
-        return (Product.objects.filter(status="AVAILABLE")
-                .select_related("farmer", "category", "unit")
-                .prefetch_related("images", "images__quality_result"))
+        queryset = (
+            Product.objects
+            .select_related("farmer", "category", "unit")
+            .prefetch_related("images", "images__quality_result")
+        )
+
+        if getattr(self, "action", None) == "reviews":
+            return queryset
+
+        return queryset.filter(status="AVAILABLE")
+
+    @action(methods=["get", "post"], detail=True, url_path="reviews")
+    def reviews(self, request, pk=None):
+        product = self.get_object()
+
+        if request.method == "POST":
+            context = self.get_serializer_context()
+            context["product"] = product
+
+            serializer = review_serializers.ReviewSerializer(
+                data=request.data,
+                context=context
+            )
+            serializer.is_valid(raise_exception=True)
+            review = serializer.save()
+
+            response_serializer = review_serializers.ReviewSerializer(
+                review,
+                context=self.get_serializer_context()
+            )
+
+            return Response(
+                response_serializer.data,
+                status=status.HTTP_201_CREATED
+            )
+
+        reviews = Review.objects.filter(
+            order_item__product=product
+        ).select_related("order_item")
+
+        page = self.paginate_queryset(reviews)
+
+        if page is not None:
+            serializer = review_serializers.ReviewSerializer(
+                page,
+                many=True,
+                context=self.get_serializer_context()
+            )
+            return self.get_paginated_response(serializer.data)
+
+        serializer = review_serializers.ReviewSerializer(
+            reviews,
+            many=True,
+            context=self.get_serializer_context()
+        )
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-class FarmerProductViewSet(viewsets.ViewSet, generics.ListCreateAPIView, generics.RetrieveUpdateDestroyAPIView):
+class FarmerProductViewSet(
+    viewsets.ViewSet,
+    generics.ListCreateAPIView,
+    generics.RetrieveUpdateDestroyAPIView
+):
     queryset = Product.objects.all()
     serializer_class = serializers.ProductSerializer
     permission_classes = [IsFarmer]
     http_method_names = ["get", "post", "patch", "delete", "head", "options"]
 
     def get_queryset(self):
-        return ((Product.objects.filter(farmer__user=self.request.user)
-                .select_related("farmer", "category", "unit"))
-                .prefetch_related("images", "images__quality_result"))
+        return (
+            Product.objects.filter(farmer__user=self.request.user)
+            .select_related("farmer", "category", "unit")
+            .prefetch_related("images", "images__quality_result")
+        )
 
     def perform_create(self, serializer):
         farmer = get_object_or_404(Farmer, user=self.request.user)
         serializer.save(farmer=farmer)
 
-    @action(methods=["get", "post"], detail=True, url_path="images",
-            parser_classes=[parsers.MultiPartParser, parsers.FormParser])
+    @action(
+        methods=["get", "post"],
+        detail=True,
+        url_path="images",
+        parser_classes=[parsers.MultiPartParser, parsers.FormParser]
+    )
     def images(self, request, pk=None):
         product = self.get_object()
 
         if request.method == "POST":
-            serializer = serializers.ProductImageSerializer(data=request.data, context=self.get_serializer_context())
+            serializer = serializers.ProductImageSerializer(
+                data=request.data,
+                context=self.get_serializer_context()
+            )
             serializer.is_valid(raise_exception=True)
             product_image = serializer.save(product=product)
 
             response_serializer = serializers.ProductImageSerializer(
-                product_image, context=self.get_serializer_context())
+                product_image,
+                context=self.get_serializer_context()
+            )
 
-            return Response(response_serializer.data, status=status.HTTP_201_CREATED)
+            return Response(
+                response_serializer.data,
+                status=status.HTTP_201_CREATED
+            )
 
         product_images = product.images.select_related("quality_result").all()
 
         serializer = serializers.ProductImageSerializer(
-            product_images, many=True, context=self.get_serializer_context())
+            product_images,
+            many=True,
+            context=self.get_serializer_context()
+        )
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    @action(methods=["delete"], detail=True, url_path=r"images/(?P<image_id>\d+)", url_name="image-detail")
+    @action(
+        methods=["delete"],
+        detail=True,
+        url_path=r"images/(?P<image_id>\d+)",
+        url_name="image-detail"
+    )
     def image_detail(self, request, pk=None, image_id=None):
         with transaction.atomic():
             product = self.get_object()
-            product_image = get_object_or_404(ProductImage, pk=image_id, product=product)
+            product_image = get_object_or_404(
+                ProductImage,
+                pk=image_id,
+                product=product
+            )
 
             was_primary = product_image.is_primary
             product_image.delete()
 
             if was_primary:
-                replacement = (product.images.filter(quality_result__is_acceptable=True)
-                               .order_by("display_order", "created_date").first())
+                replacement = (
+                    product.images
+                    .filter(quality_result__is_acceptable=True)
+                    .order_by("display_order", "created_date")
+                    .first()
+                )
 
                 if replacement:
                     replacement.is_primary = True
-                    replacement.save(update_fields=["is_primary", "updated_date"])
+                    replacement.save(
+                        update_fields=["is_primary", "updated_date"]
+                    )
 
             acceptable_images_exist = product.images.filter(
-                quality_result__is_acceptable=True).exists()
+                quality_result__is_acceptable=True
+            ).exists()
 
             if product.status == "AVAILABLE" and not acceptable_images_exist:
                 product.status = "HIDDEN"

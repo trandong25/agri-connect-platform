@@ -20,6 +20,7 @@ urlpatterns = [
     path("", include(router.urls)),
     *account_path_urlpatterns,
     path("", include("orders.urls")),
-    path("", include("payments.urls"))
+    path("", include("payments.urls")),
+    path("", include("reviews.urls")),
 
 ]
