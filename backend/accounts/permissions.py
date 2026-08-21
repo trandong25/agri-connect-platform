@@ -1,6 +1,6 @@
 from rest_framework.permissions import BasePermission
 
-from .models import ApprovalStatus, Farmer, User, KOC
+from .models import KOC, ApprovalStatus, Farmer, User
 
 
 class IsFarmer(BasePermission):

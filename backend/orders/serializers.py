@@ -4,8 +4,8 @@ from django.db import transaction
 from django.utils import timezone
 from rest_framework import serializers
 
-from affiliates.constants import COMMISSION_RATE
 from accounts.models import Address
+from affiliates.constants import COMMISSION_RATE
 from affiliates.models import AffiliateLink, Commission
 from payments.models import Payment
 from products.models import Product

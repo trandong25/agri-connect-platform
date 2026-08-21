@@ -3,7 +3,6 @@ from rest_framework.routers import DefaultRouter
 
 from . import views
 
-
 router = DefaultRouter()
 router.register("affiliate-links", views.AffiliateLinkViewSet, basename="affiliate-link")
 router.register("promotion-posts", views.PromotionPostViewSet, basename="promotion-post")
