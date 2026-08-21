@@ -6,10 +6,7 @@ from .models import AffiliateLink, Commission, PromotionPost
 class PromotionPostInline(admin.TabularInline):
     model = PromotionPost
     extra = 0
-    fields = [
-        "platform", "title", "status",
-        "published_at", "created_date",
-    ]
+    fields = ["content", "status", "published_at", "created_date"]
     readonly_fields = fields
     can_delete = False
 
@@ -20,10 +17,7 @@ class PromotionPostInline(admin.TabularInline):
 class CommissionInline(admin.TabularInline):
     model = Commission
     extra = 0
-    fields = [
-        "order_item", "rate", "amount",
-        "status", "paid_at", "created_date",
-    ]
+    fields = ["order_item", "rate", "amount", "status", "paid_at", "created_date"]
     readonly_fields = fields
     can_delete = False
 
@@ -32,19 +26,10 @@ class CommissionInline(admin.TabularInline):
 
 
 class AffiliateLinkAdmin(admin.ModelAdmin):
-    list_display = [
-        "id", "koc", "product", "code",
-        "click_count", "created_date",
-    ]
+    list_display = ["id", "koc", "product", "code", "created_date"]
     list_filter = ["created_date"]
-    search_fields = [
-        "=code", "product__name",
-        "koc__user__username", "koc__user__email",
-    ]
-    readonly_fields = [
-        "koc", "product", "code", "click_count",
-        "created_date", "updated_date",
-    ]
+    search_fields = ["=code", "product__name", "koc__user__username", "koc__user__email"]
+    readonly_fields = ["koc", "product", "code", "created_date", "updated_date"]
     list_select_related = ["koc", "koc__user", "product"]
     date_hierarchy = "created_date"
     ordering = ["-created_date"]
@@ -58,25 +43,17 @@ class AffiliateLinkAdmin(admin.ModelAdmin):
 
 
 class PromotionPostAdmin(admin.ModelAdmin):
-    list_display = [
-        "id", "affiliate_link", "platform", "title",
-        "status", "published_at", "created_date",
-    ]
-    list_filter = ["platform", "status", "published_at", "created_date"]
+    list_display = ["id", "affiliate_link", "status", "published_at", "created_date"]
+    list_filter = ["status", "published_at", "created_date"]
     search_fields = [
-        "title", "content", "post_url",
-        "affiliate_link__product__name",
-        "affiliate_link__koc__user__username",
+        "content", "affiliate_link__product__name",
+        "affiliate_link__koc__user__username"
     ]
     readonly_fields = [
-        "affiliate_link", "platform", "title", "content",
-        "post_url", "status", "published_at",
-        "created_date", "updated_date",
+        "affiliate_link", "content", "status",
+        "published_at", "created_date", "updated_date"
     ]
-    list_select_related = [
-        "affiliate_link", "affiliate_link__product",
-        "affiliate_link__koc",
-    ]
+    list_select_related = ["affiliate_link", "affiliate_link__product", "affiliate_link__koc"]
     date_hierarchy = "created_date"
     ordering = ["-created_date"]
 
@@ -90,22 +67,19 @@ class PromotionPostAdmin(admin.ModelAdmin):
 class CommissionAdmin(admin.ModelAdmin):
     list_display = [
         "id", "affiliate_link", "order_item",
-        "rate", "amount", "status", "paid_at", "created_date",
+        "rate", "amount", "status", "paid_at", "created_date"
     ]
     list_filter = ["status", "paid_at", "created_date"]
     search_fields = [
         "=order_item__seller_order__order__code",
         "affiliate_link__product__name",
-        "affiliate_link__koc__user__username",
+        "affiliate_link__koc__user__username"
     ]
     readonly_fields = [
         "affiliate_link", "order_item", "rate", "amount",
-        "status", "paid_at", "created_date", "updated_date",
+        "status", "paid_at", "created_date", "updated_date"
     ]
-    list_select_related = [
-        "affiliate_link", "affiliate_link__product",
-        "affiliate_link__koc", "order_item",
-    ]
+    list_select_related = ["affiliate_link", "affiliate_link__product", "affiliate_link__koc", "order_item"]
     date_hierarchy = "created_date"
     ordering = ["-created_date"]
 
