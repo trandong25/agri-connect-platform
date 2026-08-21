@@ -5,7 +5,7 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 
 from accounts.models import KOC, Address, Farmer, User
-from affiliates.models import AffiliateLink
+from affiliates.models import AffiliateLink, Commission
 from orders.models import (
     Cart,
     CartItem,
@@ -553,3 +553,49 @@ class SellerOrderApiTests(APITestCase):
             ).count(),
             log_count
         )
+
+    def test_completed_seller_order_creates_commission(self):
+        koc_user = User.objects.create_user(
+            username="commission_koc", email="commission_koc@example.com",
+            password="StrongPass123!", role=User.Role.KOC
+        )
+        koc = KOC.objects.create(
+            user=koc_user, koc_name="KOC hoa hồng",
+            approval_status="APPROVED"
+        )
+
+        category = Category.objects.create(name="Trái cây hoa hồng")
+        unit = Unit.objects.create(name="Kilogram hoa hồng", symbol="kgc")
+        product = Product.objects.create(
+            farmer=self.farmer, category=category, unit=unit,
+            name="Xoài hoa hồng", price=Decimal("30000.00"),
+            stock_quantity=Decimal("10.00"),
+            minimum_order_quantity=Decimal("1.00"),
+            status="AVAILABLE"
+        )
+
+        affiliate_link = AffiliateLink.objects.create(koc=koc, product=product)
+
+        order_item = OrderItem.objects.create(
+            seller_order=self.seller_order, product=product,
+            affiliate_link=affiliate_link, product_name=product.name,
+            unit_name=unit.name, unit_price=Decimal("30000.00"),
+            quantity=Decimal("2.00"), subtotal=Decimal("60000.00")
+        )
+
+        self.seller_order.status = "SHIPPING"
+        self.seller_order.save(update_fields=["status", "updated_date"])
+
+        response = self.client.patch(
+            reverse("seller-order-update-status", args=[self.seller_order.id]),
+            {"status": "COMPLETED"},
+            format="json"
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        commission = Commission.objects.get(order_item=order_item)
+        self.assertEqual(commission.affiliate_link, affiliate_link)
+        self.assertEqual(commission.rate, Decimal("5.00"))
+        self.assertEqual(commission.amount, Decimal("3000.00"))
+        self.assertEqual(commission.status, "PENDING")

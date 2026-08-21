@@ -4,8 +4,9 @@ from django.db import transaction
 from django.utils import timezone
 from rest_framework import serializers
 
+from affiliates.constants import COMMISSION_RATE
 from accounts.models import Address
-from affiliates.models import AffiliateLink
+from affiliates.models import AffiliateLink, Commission
 from payments.models import Payment
 from products.models import Product
 from products.serializers import PublicProductSerializer
@@ -165,7 +166,9 @@ class SellerOrderStatusUpdateSerializer(serializers.Serializer):
 
         seller_order.status = new_status
         setattr(seller_order, timestamp_field, timezone.now())
-        seller_order.save(update_fields=["status", timestamp_field, "updated_date"])
+        seller_order.save(
+            update_fields=["status", timestamp_field, "updated_date"]
+        )
 
         SellerOrderStatusLog.objects.create(
             seller_order=seller_order,
@@ -174,6 +177,30 @@ class SellerOrderStatusUpdateSerializer(serializers.Serializer):
             changed_by=self.context["request"].user,
             note=validated_data.get("note", "")
         )
+
+        if new_status == "COMPLETED":
+            order_items = seller_order.items.select_related(
+                "affiliate_link"
+            ).filter(
+                affiliate_link__isnull=False
+            )
+
+            for order_item in order_items:
+                commission_amount = (
+                    order_item.subtotal
+                    * COMMISSION_RATE
+                    / Decimal("100")
+                ).quantize(Decimal("0.01"))
+
+                Commission.objects.get_or_create(
+                    order_item=order_item,
+                    defaults={
+                        "affiliate_link": order_item.affiliate_link,
+                        "rate": COMMISSION_RATE,
+                        "amount": commission_amount,
+                        "status": "PENDING"
+                    }
+                )
 
         return seller_order
 
