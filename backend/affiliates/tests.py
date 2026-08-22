@@ -77,6 +77,7 @@ class AffiliateApiTests(APITestCase):
         self.assertEqual(promotion_post.affiliate_link, affiliate_link)
         self.assertEqual(promotion_post.status, "PUBLISHED")
         self.assertIsNotNone(promotion_post.published_at)
+        self.assertEqual(response.data["media"], [])
 
     def test_public_can_only_see_published_posts(self):
         affiliate_link = AffiliateLink.objects.create(koc=self.koc, product=self.product)
