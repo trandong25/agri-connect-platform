@@ -3,7 +3,7 @@ from rest_framework import serializers
 
 from accounts.models import KOC
 
-from .models import AffiliateLink, Commission, PromotionPost
+from .models import AffiliateLink, Commission, PromotionPost, PromotionPostMedia
 
 
 class AffiliateLinkSerializer(serializers.ModelSerializer):
@@ -36,22 +36,88 @@ class AffiliateLinkSerializer(serializers.ModelSerializer):
         return affiliate_link
 
 
+class PromotionPostMediaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PromotionPostMedia
+        fields = [
+            "id", "file", "media_type", "display_order",
+            "created_date", "updated_date"
+        ]
+        read_only_fields = ["id", "media_type", "created_date", "updated_date"]
+
+    def validate(self, data):
+        request = self.context["request"]
+        promotion_post = self.context["promotion_post"]
+        uploaded_file = request.FILES.get("file")
+
+        if uploaded_file is None:
+            raise serializers.ValidationError({
+                "file": "Bạn phải chọn hình ảnh hoặc video."
+            })
+
+        content_type = uploaded_file.content_type or ""
+
+        if content_type.startswith("image/"):
+            if promotion_post.media.filter(media_type="VIDEO").exists():
+                raise serializers.ValidationError({
+                    "file": "Không thể thêm hình ảnh vào bài đã có video."
+                })
+
+            if promotion_post.media.filter(media_type="IMAGE").count() >= 5:
+                raise serializers.ValidationError({
+                    "file": "Mỗi bài quảng bá chỉ được tối đa 5 hình ảnh."
+                })
+
+            data["media_type"] = "IMAGE"
+            return data
+
+        if content_type.startswith("video/"):
+            if promotion_post.media.exists():
+                raise serializers.ValidationError({
+                    "file": "Bài có video không được chứa hình ảnh hoặc video khác."
+                })
+
+            data["media_type"] = "VIDEO"
+            return data
+
+        raise serializers.ValidationError({
+            "file": "Chỉ hỗ trợ file hình ảnh hoặc video."
+        })
+
+    def create(self, validated_data):
+        promotion_post = self.context["promotion_post"]
+        return PromotionPostMedia.objects.create(
+            promotion_post=promotion_post,
+            **validated_data
+        )
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+
+        if instance.file:
+            data["file"] = instance.file.url
+
+        return data
+
+
 class PromotionPostSerializer(serializers.ModelSerializer):
     koc_name = serializers.CharField(source="affiliate_link.koc.koc_name", read_only=True)
     affiliate_code = serializers.UUIDField(source="affiliate_link.code", read_only=True)
     product = serializers.IntegerField(source="affiliate_link.product_id", read_only=True)
     product_name = serializers.CharField(source="affiliate_link.product.name", read_only=True)
+    media = PromotionPostMediaSerializer(many=True, read_only=True)
 
     class Meta:
         model = PromotionPost
         fields = [
             "id", "affiliate_link", "affiliate_code", "koc_name",
-            "product", "product_name", "content", "status",
+            "product", "product_name", "content", "status", "media",
             "published_at", "created_date", "updated_date"
         ]
         read_only_fields = [
             "id", "affiliate_code", "koc_name", "product",
-            "product_name", "published_at", "created_date", "updated_date"
+            "product_name", "media", "published_at",
+            "created_date", "updated_date"
         ]
 
     def validate_affiliate_link(self, affiliate_link):

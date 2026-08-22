@@ -1,5 +1,6 @@
 import uuid
 
+from cloudinary.models import CloudinaryField
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
@@ -43,6 +44,30 @@ class PromotionPost(BaseModel):
 
     def __str__(self):
         return f"Bài quảng bá {self.id}"
+
+
+class PromotionPostMedia(BaseModel):
+    MEDIA_TYPES = [
+        ("IMAGE", "Hình ảnh"),
+        ("VIDEO", "Video")
+    ]
+
+    promotion_post = models.ForeignKey(
+        PromotionPost, on_delete=models.CASCADE,
+        related_name="media", verbose_name="Bài quảng bá"
+    )
+    file = CloudinaryField(
+        "Nội dung media", folder="agri_connect/promotion_posts",
+        resource_type="auto"
+    )
+    media_type = models.CharField("Loại media", max_length=10, choices=MEDIA_TYPES)
+    display_order = models.PositiveIntegerField("Thứ tự hiển thị", default=0)
+
+    class Meta:
+        ordering = ["display_order", "created_date"]
+
+    def __str__(self):
+        return f"Bài quảng bá {self.promotion_post_id} - {self.media_type}"
 
 
 class Commission(BaseModel):
