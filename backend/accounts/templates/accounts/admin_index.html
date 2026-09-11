@@ -1,0 +1,30 @@
+{% extends "admin/index.html" %}
+
+{% block content %}
+<div class="module" style="margin-bottom: 20px;">
+    <table>
+        <caption>
+            <a
+                href="{% url 'admin-statistics' %}"
+                class="section"
+            >
+                Báo cáo hệ thống
+            </a>
+        </caption>
+
+        <tr>
+            <th scope="row">
+                <a href="{% url 'admin-statistics' %}">
+                    Xem báo cáo thống kê
+                </a>
+            </th>
+
+            <td>
+                Người dùng, sản phẩm, đơn hàng, doanh thu và hoa hồng
+            </td>
+        </tr>
+    </table>
+</div>
+
+{{ block.super }}
+{% endblock %}

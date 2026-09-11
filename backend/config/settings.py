@@ -1,13 +1,16 @@
 from pathlib import Path
 
+import cloudinary.api
 import environ
-from django.conf.global_settings import AUTH_USER_MODEL
+import pymysql
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 env = environ.Env(
-    DJANGO_DEBUG=(bool, False),
+    DJANGO_DEBUG=(bool, True),
 )
+
 environ.Env.read_env(BASE_DIR / ".env")
 
 # Quick-start development settings - unsuitable for production
@@ -21,9 +24,8 @@ DEBUG = env.bool("DJANGO_DEBUG")
 
 ALLOWED_HOSTS = env.list(
     "DJANGO_ALLOWED_HOSTS",
-    default=["127.0.0.1", "localhost"],
+    default=["127.0.0.1", "localhost", "192.168.1.13"],
 )
-
 
 # Application definition
 
@@ -36,9 +38,31 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "accounts.apps.AccountsConfig",
+    "products.apps.ProductsConfig",
+    "orders.apps.OrdersConfig",
+    "payments.apps.PaymentsConfig",
+    "affiliates.apps.AffiliatesConfig",
+    "reviews.apps.ReviewsConfig",
+    "notifications.apps.NotificationsConfig",
+    "drf_spectacular",
+    "django_filters",
 ]
 
 AUTH_USER_MODEL = "accounts.User"
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ),
+"DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema"
+}
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "AgriConnect API",
+    "DESCRIPTION": "REST API cho nền tảng thương mại điện tử nông sản",
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False
+}
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -69,22 +93,29 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "config.wsgi.application"
 
-
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": env("DB_NAME"),
-        "USER": env("DB_USER"),
-        "PASSWORD": env("DB_PASSWORD"),
-        "HOST": env("DB_HOST"),
-        "PORT": env("DB_PORT"),
+        "ENGINE": "django.db.backends.mysql",
+        "NAME": config("DB_NAME"),
+        "USER": config("DB_USER"),
+        "PASSWORD": config("DB_PASSWORD"),
+        "HOST": config("DB_HOST"),
+        "PORT": config("DB_PORT"),
     }
 }
 
+cloudinary.config(
+    cloud_name=env("CLOUDINARY_CLOUD_NAME"),
+    api_key=env("CLOUDINARY_API_KEY"),
+    api_secret=env("CLOUDINARY_API_SECRET"),
+    secure=True
+)
 
+
+pymysql.install_as_MySQLdb()
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
 
@@ -103,7 +134,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
@@ -114,7 +144,6 @@ USE_I18N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
@@ -124,3 +153,9 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+CV_MODEL_PATH = BASE_DIR / 'ml_models' / 'yolo11_v6_best.pt'
+CV_QUALITY_CONFIG_PATH = BASE_DIR / 'ml_models' / 'opencv_quality_config.json'
+CV_DETECTION_CONFIDENCE = 0.05
+CV_SUGGESTION_CONFIDENCE = 0.50
+CV_DEVICE = 'cpu'
