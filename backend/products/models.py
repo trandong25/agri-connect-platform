@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from cloudinary.models import CloudinaryField
 from django.core.validators import MinValueValidator
 from django.db import models
@@ -48,8 +50,8 @@ class Product(BaseModel):
         "Số lượng đặt tối thiểu",
         max_digits=12,
         decimal_places=2,
-        default=1,
-        validators=[MinValueValidator(0.01)],
+        default=Decimal("1.00"),
+        validators=[MinValueValidator(Decimal("0.01"))]
     )
     harvest_date = models.DateField("Ngày thu hoạch", null=True, blank=True, )
     expiry_date = models.DateField("Ngày hết hạn", null=True, blank=True)

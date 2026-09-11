@@ -12,15 +12,29 @@ class Notification(BaseModel):
         ("SYSTEM", "Hệ thống")
     ]
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="notifications", verbose_name="Người nhận")
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="notifications",
+        verbose_name="Người nhận"
+    )
     notification_type = models.CharField(
-        "Loại thông báo", max_length=20,
-        choices=NOTIFICATION_TYPES, default="SYSTEM"
+        "Loại thông báo",
+        max_length=20,
+        choices=NOTIFICATION_TYPES,
+        default="SYSTEM"
     )
     title = models.CharField("Tiêu đề", max_length=250)
     message = models.TextField("Nội dung")
-    data = models.JSONField("Dữ liệu liên quan", default=dict, blank=True)
-    is_read = models.BooleanField("Đã đọc", default=False)
+    data = models.JSONField(
+        "Dữ liệu liên quan",
+        default=dict,
+        blank=True
+    )
+    is_read = models.BooleanField(
+        "Đã đọc",
+        default=False
+    )
 
     class Meta:
         ordering = ["-created_date"]

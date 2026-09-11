@@ -1,3 +1,4 @@
+from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from rest_framework import generics, parsers, permissions, status, viewsets
 from rest_framework.decorators import action
@@ -42,64 +43,123 @@ class PromotionPostViewSet(
         return [permissions.AllowAny()]
 
     def get_queryset(self):
-        queryset = (PromotionPost.objects.select_related(
-            "affiliate_link", "affiliate_link__koc",
-            "affiliate_link__product"
-        ).prefetch_related("media"))
+        queryset = (
+            PromotionPost.objects
+            .select_related(
+                "affiliate_link",
+                "affiliate_link__koc",
+                "affiliate_link__product"
+            )
+            .prefetch_related("media")
+        )
 
         owner_actions = [
-            "partial_update", "destroy", "mine",
-            "media", "media_detail"
+            "partial_update",
+            "destroy",
+            "mine",
+            "media",
+            "media_detail"
         ]
 
         if self.action in owner_actions:
-            return queryset.filter(affiliate_link__koc__user=self.request.user)
+            if not self.request.user.is_authenticated:
+                return PromotionPost.objects.none()
 
-        return queryset.filter(status="PUBLISHED")
+            return queryset.filter(
+                affiliate_link__koc__user=self.request.user
+            )
+
+        if self.action == "retrieve":
+            if self.request.user.is_authenticated:
+                return queryset.filter(
+                    Q(
+                        affiliate_link__koc__user=self.request.user
+                    )
+                    | Q(
+                        status="PUBLISHED",
+                        affiliate_link__product__status="AVAILABLE"
+                    )
+                ).distinct()
+
+            return queryset.filter(
+                status="PUBLISHED",
+                affiliate_link__product__status="AVAILABLE"
+            )
+
+        return queryset.filter(
+            status="PUBLISHED",
+            affiliate_link__product__status="AVAILABLE"
+        )
 
     @action(methods=["get"], detail=False, url_path="mine")
     def mine(self, request):
         queryset = self.get_queryset()
-        serializer = self.get_serializer(queryset, many=True)
+        serializer = self.get_serializer(
+            queryset,
+            many=True
+        )
         return Response(serializer.data)
 
     @action(
-        methods=["post"], detail=True, url_path="media",
-        parser_classes=[parsers.MultiPartParser, parsers.FormParser]
+        methods=["post"],
+        detail=True,
+        url_path="media",
+        parser_classes=[
+            parsers.MultiPartParser,
+            parsers.FormParser
+        ]
     )
     def media(self, request, pk=None):
         promotion_post = self.get_object()
+
         context = self.get_serializer_context()
         context["promotion_post"] = promotion_post
 
         serializer = serializers.PromotionPostMediaSerializer(
-            data=request.data, context=context
+            data=request.data,
+            context=context
         )
-        serializer.is_valid(raise_exception=True)
+        serializer.is_valid(
+            raise_exception=True
+        )
+
         media = serializer.save()
 
         response_serializer = serializers.PromotionPostMediaSerializer(
-            media, context=context
+            media,
+            context=context
         )
 
-        return Response(response_serializer.data, status=status.HTTP_201_CREATED)
+        return Response(
+            response_serializer.data,
+            status=status.HTTP_201_CREATED
+        )
 
     @action(
-        methods=["delete"], detail=True,
+        methods=["delete"],
+        detail=True,
         url_path=r"media/(?P<media_id>\d+)",
         url_name="media-detail"
     )
-    def media_detail(self, request, pk=None, media_id=None):
+    def media_detail(
+        self,
+        request,
+        pk=None,
+        media_id=None
+    ):
         promotion_post = self.get_object()
+
         media = get_object_or_404(
             PromotionPostMedia,
             pk=media_id,
             promotion_post=promotion_post
         )
+
         media.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
 
-
+        return Response(
+            status=status.HTTP_204_NO_CONTENT
+        )
 class CommissionViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIView):
     serializer_class = serializers.CommissionSerializer
     permission_classes = [permissions.IsAuthenticated, IsApprovedKOC]

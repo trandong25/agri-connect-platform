@@ -1,5 +1,6 @@
 from decimal import Decimal
 
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import transaction
 from django.utils import timezone
 from rest_framework import serializers
@@ -92,18 +93,32 @@ class SellerOrderStatusLogSerializer(serializers.ModelSerializer):
 
 class OrderItemSerializer(serializers.ModelSerializer):
     affiliate_code = serializers.SerializerMethodField()
+    review = serializers.SerializerMethodField()
 
     class Meta:
         model = OrderItem
         fields = [
             "id", "product", "affiliate_code", "product_name", "unit_name",
-            "unit_price", "quantity", "subtotal", "created_date"
+            "unit_price", "quantity", "subtotal", "review", "created_date"
         ]
         read_only_fields = fields
 
     def get_affiliate_code(self, instance):
         return str(instance.affiliate_link.code) if instance.affiliate_link else None
 
+    def get_review(self, instance):
+        try:
+            review = instance.review
+        except ObjectDoesNotExist:
+            return None
+
+        return {
+            "id": review.id,
+            "rating": review.rating,
+            "comment": review.comment,
+            "created_date": review.created_date,
+            "updated_date": review.updated_date
+        }
 
 class SellerOrderSerializer(serializers.ModelSerializer):
     items = OrderItemSerializer(many=True, read_only=True)
@@ -233,7 +248,8 @@ class SellerOrderStatusUpdateSerializer(serializers.Serializer):
                         "affiliate_link": order_item.affiliate_link,
                         "rate": COMMISSION_RATE,
                         "amount": commission_amount,
-                        "status": "PENDING"
+                        "status": "PAID",
+                        "paid_at": timezone.now()
                     }
                 )
 
@@ -383,6 +399,7 @@ class OrderSerializer(serializers.ModelSerializer):
 
         for farmer_data in seller_data.values():
             seller_subtotal = farmer_data["subtotal"]
+
             seller_order = SellerOrder.objects.create(
                 order=order,
                 farmer=farmer_data["farmer"],

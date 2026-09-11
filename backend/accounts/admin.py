@@ -88,7 +88,9 @@ class KOCAdmin(admin.ModelAdmin):
 
     def approve_kocs(self, request, queryset):
         now = timezone.now()
-        kocs = queryset.filter(approval_status=ApprovalStatus.PENDING)
+        kocs = queryset.exclude(
+            approval_status=ApprovalStatus.APPROVED
+        )
         count = kocs.update(approval_status=ApprovalStatus.APPROVED,approved_by=request.user,approved_at=now,updated_date=now)
 
         self.message_user(request,f"Đã duyệt {count} hồ sơ KOC/KOL.",level=messages.SUCCESS,)
@@ -129,3 +131,4 @@ admin.site.register(Address, AddressAdmin)
 admin.site.site_header = "Quản trị AgriConnect"
 admin.site.site_title = "AgriConnect Admin"
 admin.site.index_title = "Quản lý hệ thống"
+admin.site.index_template = "accounts/admin_index.html"

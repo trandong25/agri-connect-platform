@@ -13,8 +13,6 @@ env = environ.Env(
 
 environ.Env.read_env(BASE_DIR / ".env")
 
-DEBUG = env.bool("DJANGO_DEBUG")
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
@@ -26,7 +24,7 @@ DEBUG = env.bool("DJANGO_DEBUG")
 
 ALLOWED_HOSTS = env.list(
     "DJANGO_ALLOWED_HOSTS",
-    default=["127.0.0.1", "localhost"],
+    default=["127.0.0.1", "localhost", "192.168.1.13"],
 )
 
 # Application definition
@@ -155,3 +153,9 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+CV_MODEL_PATH = BASE_DIR / 'ml_models' / 'yolo11_v6_best.pt'
+CV_QUALITY_CONFIG_PATH = BASE_DIR / 'ml_models' / 'opencv_quality_config.json'
+CV_DETECTION_CONFIDENCE = 0.05
+CV_SUGGESTION_CONFIDENCE = 0.50
+CV_DEVICE = 'cpu'

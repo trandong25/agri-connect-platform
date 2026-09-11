@@ -598,4 +598,5 @@ class SellerOrderApiTests(APITestCase):
         self.assertEqual(commission.affiliate_link, affiliate_link)
         self.assertEqual(commission.rate, Decimal("5.00"))
         self.assertEqual(commission.amount, Decimal("3000.00"))
-        self.assertEqual(commission.status, "PENDING")
+        self.assertEqual(commission.status, "PAID")
+        self.assertIsNotNone(commission.paid_at)

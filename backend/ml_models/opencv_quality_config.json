@@ -1,0 +1,43 @@
+{
+  "version": "opencv-quality-rule-v7-assistive",
+  "center_crop_ratio": 0.82,
+  "target_long_side": 720,
+  "min_side": {
+    "warning": 640,
+    "blocking": 320
+  },
+  "blur": {
+    "warning_laplacian_normalized_max": 0.008,
+    "blocking_laplacian_normalized_max": 0.0025,
+    "combined_blocking_laplacian_max": 0.004
+  },
+  "dark": {
+    "warning_p50_max": 50.0,
+    "warning_secondary_p50_max": 60.0,
+    "warning_secondary_p90_max": 120.0,
+    "warning_dark_pixel_ratio_min": 0.4,
+    "blocking_p50_max": 35.0,
+    "blocking_p90_max": 95.0,
+    "blocking_dark_pixel_ratio_min": 0.6
+  },
+  "overexposed": {
+    "warning_p95_min": 245.0,
+    "warning_bright_pixel_ratio_min": 0.08,
+    "blocking_p99_min": 253.0,
+    "blocking_bright_pixel_ratio_min": 0.35
+  },
+  "low_contrast": {
+    "warning_contrast_std_max": 20.0,
+    "warning_local_contrast_median_max": 14.0,
+    "blocking_contrast_std_max": 16.0,
+    "blocking_local_contrast_median_max": 9.0,
+    "combined_blocking_local_contrast_max": 8.0
+  },
+  "penalties": {
+    "BLUR": 15,
+    "DARK": 15,
+    "OVEREXPOSED": 15,
+    "LOW_CONTRAST": 10,
+    "LOW_RESOLUTION": 5
+  }
+}

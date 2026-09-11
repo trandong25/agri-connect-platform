@@ -8,22 +8,45 @@ from .models import Review
 class ReviewSerializer(serializers.ModelSerializer):
     order_item = serializers.PrimaryKeyRelatedField(
         queryset=OrderItem.objects.select_related(
-            "product", "seller_order", "seller_order__order"
+            "product",
+            "seller_order",
+            "seller_order__order"
         ),
         write_only=True
     )
-    product = serializers.IntegerField(source="order_item.product_id", read_only=True)
-    product_name = serializers.CharField(source="order_item.product_name", read_only=True)
+    product = serializers.IntegerField(
+        source="order_item.product_id",
+        read_only=True
+    )
+    product_name = serializers.CharField(
+        source="order_item.product_name",
+        read_only=True
+    )
+    reviewer_name = serializers.CharField(
+        source="order_item.seller_order.order.consumer.username",
+        read_only=True
+    )
 
     class Meta:
         model = Review
         fields = [
-            "id", "order_item", "product", "product_name",
-            "rating", "comment", "created_date", "updated_date"
+            "id",
+            "order_item",
+            "product",
+            "product_name",
+            "reviewer_name",
+            "rating",
+            "comment",
+            "created_date",
+            "updated_date"
         ]
         read_only_fields = [
-            "id", "product", "product_name",
-            "created_date", "updated_date"
+            "id",
+            "product",
+            "product_name",
+            "reviewer_name",
+            "created_date",
+            "updated_date"
         ]
 
     def validate_order_item(self, order_item):

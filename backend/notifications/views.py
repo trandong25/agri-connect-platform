@@ -22,25 +22,50 @@ class NotificationViewSet(
         if not self.request.user.is_authenticated:
             return Notification.objects.none()
 
-        return Notification.objects.filter(user=self.request.user)
+        return Notification.objects.filter(
+            user=self.request.user
+        )
 
-    @action(methods=["post"], detail=True, url_path="read")
+    @action(
+        methods=["post"],
+        detail=True,
+        url_path="read"
+    )
     def read(self, request, pk=None):
         notification = self.get_object()
 
         if not notification.is_read:
             notification.is_read = True
-            notification.save(update_fields=["is_read", "updated_date"])
+            notification.save(
+                update_fields=[
+                    "is_read",
+                    "updated_date"
+                ]
+            )
 
         return Response(
-            NotificationSerializer(notification).data,
+            NotificationSerializer(
+                notification
+            ).data,
             status=status.HTTP_200_OK
         )
 
-    @action(methods=["post"], detail=False, url_path="read-all")
+    @action(
+        methods=["post"],
+        detail=False,
+        url_path="read-all"
+    )
     def read_all(self, request):
-        self.get_queryset().filter(is_read=False).update(is_read=True)
+        self.get_queryset().filter(
+            is_read=False
+        ).update(
+            is_read=True
+        )
+
         return Response(
-            {"detail": "Đã đánh dấu tất cả thông báo là đã đọc."},
+            {
+                "detail":
+                    "Đã đánh dấu tất cả thông báo là đã đọc."
+            },
             status=status.HTTP_200_OK
         )

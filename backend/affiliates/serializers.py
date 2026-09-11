@@ -147,6 +147,27 @@ class PromotionPostSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 
+    def validate(self, data):
+        affiliate_link = data.get(
+            "affiliate_link",
+            self.instance.affiliate_link if self.instance else None
+        )
+
+        post_status = data.get(
+            "status",
+            self.instance.status if self.instance else "DRAFT"
+        )
+
+        if (
+                post_status == "PUBLISHED"
+                and affiliate_link
+                and affiliate_link.product.status != "AVAILABLE"
+        ):
+            raise serializers.ValidationError({
+                "status": "Không thể đăng bài vì sản phẩm hiện không còn được bán."
+            })
+
+        return data
 
 class CommissionSerializer(serializers.ModelSerializer):
     koc = serializers.IntegerField(source="affiliate_link.koc_id", read_only=True)

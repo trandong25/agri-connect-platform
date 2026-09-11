@@ -168,7 +168,9 @@ class OrderViewSet(viewsets.ViewSet, generics.ListCreateAPIView, generics.Retrie
         if not self.request.user.is_authenticated:
             return Order.objects.none()
 
-        order_items = OrderItem.objects.select_related("product", "affiliate_link")
+        order_items = OrderItem.objects.select_related(
+            "product", "affiliate_link", "review"
+        )
         status_logs = SellerOrderStatusLog.objects.select_related("changed_by")
         seller_orders = SellerOrder.objects.select_related("farmer", "farmer__user").prefetch_related(
             Prefetch("items", queryset=order_items), Prefetch("status_logs", queryset=status_logs)
@@ -192,7 +194,9 @@ class SellerOrderViewSet(viewsets.ViewSet, generics.ListAPIView, generics.Retrie
         if not self.request.user.is_authenticated:
             return SellerOrder.objects.none()
 
-        order_items = OrderItem.objects.select_related("product", "affiliate_link")
+        order_items = OrderItem.objects.select_related(
+            "product", "affiliate_link", "review"
+        )
         status_logs = SellerOrderStatusLog.objects.select_related("changed_by")
 
         return SellerOrder.objects.filter(

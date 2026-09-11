@@ -1,4 +1,5 @@
 import uuid
+from decimal import Decimal
 
 from django.core.validators import MinValueValidator
 from django.db import models
@@ -18,7 +19,12 @@ class CartItem(BaseModel):
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name="items", verbose_name="Giỏ hàng")
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="cart_items", verbose_name="Sản phẩm")
     affiliate_link = models.ForeignKey("affiliates.AffiliateLink", on_delete=models.SET_NULL, null=True, blank=True, related_name="cart_items", verbose_name="Liên kết giới thiệu")
-    quantity = models.DecimalField("Số lượng", max_digits=12, decimal_places=2, validators=[MinValueValidator(0.01)])
+    quantity = models.DecimalField(
+        "Số lượng",
+        max_digits=12,
+        decimal_places=2,
+        validators=[MinValueValidator(Decimal("0.01"))]
+    )
 
     class Meta:
         ordering = ["created_date"]

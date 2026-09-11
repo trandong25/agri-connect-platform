@@ -5,7 +5,6 @@ from . import views
 
 router = DefaultRouter()
 router.register("notifications", views.NotificationViewSet, basename="notification")
-
 urlpatterns = [
     path("", include(router.urls))
 ]
