@@ -1,23 +1,33 @@
-"""
-URL configuration for config project.
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/5.2/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
-
 from django.contrib import admin
-from django.urls import path
+from django.urls import include, path
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
+from rest_framework.routers import DefaultRouter
+
+from accounts.admin_view import admin_statistics
+from accounts.urls import account_path_urlpatterns
+from accounts.urls import router as accounts_router
+from products.urls import router as products_router
+
+router = DefaultRouter()
+
+router.registry.extend(accounts_router.registry)
+router.registry.extend(products_router.registry)
+
 
 urlpatterns = [
+    path(
+        "admin/statistics/",
+        admin.site.admin_view(admin_statistics),
+        name="admin-statistics"
+    ),
     path("admin/", admin.site.urls),
+    path("schema/", SpectacularAPIView.as_view(), name="schema"),
+    path("docs/", SpectacularSwaggerView.as_view(url_name="schema"), name="swagger-ui"),
+    path("", include(router.urls)),
+    *account_path_urlpatterns,
+    path("", include("orders.urls")),
+    path("", include("payments.urls")),
+    path("", include("reviews.urls")),
+    path("", include("affiliates.urls")),
+    path("", include("notifications.urls"))
 ]

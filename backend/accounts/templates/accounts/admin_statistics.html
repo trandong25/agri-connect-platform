@@ -1,0 +1,218 @@
+{% extends "admin/base_site.html" %}
+
+{% block extrahead %}
+{{ block.super }}
+
+<style>
+    .stats-filter {
+        display: flex;
+        gap: 12px;
+        align-items: end;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+    }
+
+    .stats-filter div {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .stats-filter input {
+        padding: 7px 9px;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 16px;
+        margin-bottom: 24px;
+    }
+
+    .stats-card {
+        background: var(--body-bg);
+        border: 1px solid var(--hairline-color);
+        border-radius: 6px;
+        padding: 16px;
+    }
+
+    .stats-card h2 {
+        margin-top: 0;
+        font-size: 15px;
+    }
+
+    .stats-main {
+        font-size: 26px;
+        font-weight: 700;
+        margin: 8px 0;
+    }
+
+    .stats-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 5px 0;
+        border-bottom: 1px solid var(--hairline-color);
+    }
+
+    .stats-row:last-child {
+        border-bottom: 0;
+    }
+</style>
+{% endblock %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href="{% url 'admin:index' %}">Trang chủ</a>
+    &rsaquo; Báo cáo thống kê
+</div>
+{% endblock %}
+
+{% block content %}
+<h1>Báo cáo thống kê hệ thống</h1>
+
+<form method="get" class="stats-filter">
+    <div>
+        <label>Từ ngày</label>
+        <input
+            type="date"
+            name="start_date"
+            value="{{ start_date|default_if_none:'' }}"
+        >
+    </div>
+
+    <div>
+        <label>Đến ngày</label>
+        <input
+            type="date"
+            name="end_date"
+            value="{{ end_date|default_if_none:'' }}"
+        >
+    </div>
+
+    <button type="submit" class="button">
+        Lọc
+    </button>
+
+    <a href="{% url 'admin-statistics' %}" class="button">
+        Xem tất cả
+    </a>
+</form>
+
+<div class="stats-grid">
+    <div class="stats-card">
+        <h2>Người dùng</h2>
+        <div class="stats-main">{{ user_stats.total }}</div>
+
+        <div class="stats-row">
+            <span>Người tiêu dùng</span>
+            <strong>{{ user_stats.consumer }}</strong>
+        </div>
+
+        <div class="stats-row">
+            <span>Nông dân</span>
+            <strong>{{ user_stats.farmer }}</strong>
+        </div>
+
+        <div class="stats-row">
+            <span>KOC/KOL</span>
+            <strong>{{ user_stats.koc }}</strong>
+        </div>
+    </div>
+
+    <div class="stats-card">
+        <h2>Hồ sơ chờ duyệt</h2>
+
+        <div class="stats-row">
+            <span>Nông dân</span>
+            <strong>{{ pending_stats.farmer }}</strong>
+        </div>
+
+        <div class="stats-row">
+            <span>KOC/KOL</span>
+            <strong>{{ pending_stats.koc }}</strong>
+        </div>
+    </div>
+
+    <div class="stats-card">
+        <h2>Sản phẩm</h2>
+        <div class="stats-main">{{ product_stats.total }}</div>
+
+        <div class="stats-row">
+            <span>Đang bán</span>
+            <strong>{{ product_stats.available }}</strong>
+        </div>
+
+        <div class="stats-row">
+            <span>Chờ kiểm tra</span>
+            <strong>{{ product_stats.pending }}</strong>
+        </div>
+
+        <div class="stats-row">
+            <span>Đã ẩn</span>
+            <strong>{{ product_stats.hidden }}</strong>
+        </div>
+    </div>
+
+    <div class="stats-card">
+        <h2>Đơn hàng</h2>
+        <div class="stats-main">{{ order_stats.total }}</div>
+
+        <div class="stats-row">
+            <span>Chờ xác nhận</span>
+            <strong>{{ order_stats.pending }}</strong>
+        </div>
+
+        <div class="stats-row">
+            <span>Đã xác nhận</span>
+            <strong>{{ order_stats.confirmed }}</strong>
+        </div>
+
+        <div class="stats-row">
+            <span>Đang giao</span>
+            <strong>{{ order_stats.shipping }}</strong>
+        </div>
+
+        <div class="stats-row">
+            <span>Hoàn thành</span>
+            <strong>{{ order_stats.completed }}</strong>
+        </div>
+    </div>
+
+    <div class="stats-card">
+        <h2>Doanh thu hoàn thành</h2>
+
+        <div class="stats-main">
+            {{ revenue|floatformat:0 }} đ
+        </div>
+    </div>
+
+    <div class="stats-card">
+        <h2>Tiếp thị liên kết</h2>
+
+        <div class="stats-row">
+            <span>Bài quảng bá</span>
+            <strong>{{ affiliate_stats.posts }}</strong>
+        </div>
+
+        <div class="stats-row">
+            <span>Bài đang đăng</span>
+            <strong>{{ affiliate_stats.published_posts }}</strong>
+        </div>
+
+        <div class="stats-row">
+            <span>Hoa hồng</span>
+            <strong>{{ affiliate_stats.commissions }}</strong>
+        </div>
+
+        <div class="stats-row">
+            <span>Đã nhận</span>
+            <strong>{{ affiliate_stats.paid_commissions }}</strong>
+        </div>
+
+        <div class="stats-row">
+            <span>Tổng hoa hồng</span>
+            <strong>{{ paid_commission|floatformat:0 }} đ</strong>
+        </div>
+    </div>
+</div>
+{% endblock %}
