@@ -36,3 +36,6 @@ typing_extensions==4.16.0
 tzdata==2026.3
 uritemplate==4.2.0
 urllib3==2.7.0
+numpy==2.4.6
+opencv-python==5.0.0.93
+ultralytics==8.4.118
