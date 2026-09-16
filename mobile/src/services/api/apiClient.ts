@@ -7,7 +7,7 @@ import {
     saveAccessToken
 } from "../storage/tokenStorage"
 
-const API_BASE_URL = "http://172.30.110.82:8000/"
+const API_BASE_URL = "http://172.27.173.82:8000/"
 
 type RetryConfig = InternalAxiosRequestConfig & {
     _retry?: boolean

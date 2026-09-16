@@ -37,6 +37,7 @@ runs/
 models/
 datasets/
 *.pt
+!backend/ml_models/yolo11_v6_best.pt
 *.onnx
 
 # IDE

@@ -429,7 +429,7 @@ function getCommissionStatus(status: CommissionStatus) {
     if (status === "PAID") {
         return {
             label: "Đã thanh toán",
-            icon: "wallet-check-outline"
+            icon: "wallet-outline"
         }
     }
 
